@@ -90,3 +90,16 @@ WHERE ID_Loja IN (
 							WHERE Região = @regiao
                             )
 				);
+                
+# Exemplo 5: subquery como uma coluna
+
+SELECT *,
+		(
+        SELECT AVG(Preco_Unit)
+		FROM produtos
+        ) as 'Media_Preco_Unit'
+ FROM produtos;
+ 
+ 
+ # Exemplo 6: Do total de vendas por produto, qual foi a quantidade máxima vendida?
+ # e a quantidade mínima? e a média?
