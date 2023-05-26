@@ -103,3 +103,15 @@ SELECT *,
  
  # Exemplo 6: Do total de vendas por produto, qual foi a quantidade máxima vendida?
  # e a quantidade mínima? e a média?
+ 
+ select *  from pedidos;
+ 
+select
+MAX(Total_Qtd_Vendida) as 'Qtd_max',
+MIN(Total_Qtd_Vendida) as 'Qtd_min',
+AVG(Total_Qtd_Vendida) as 'Qtd_media'
+from (
+	select ID_Produto, SUM(Qtd_Vendida) as 'Total_Qtd_Vendida'
+	from pedidos
+	GROUP BY ID_Produto
+    ) AS a;
