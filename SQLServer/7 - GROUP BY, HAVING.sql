@@ -9,7 +9,6 @@ SELECT
 FROM FactSales
 GROUP BY channelKey;
 
--- 1 b)
 -- 1 B)
 SELECT
 	StoreKey,
@@ -42,8 +41,8 @@ SELECT
 	SUM(SalesAmount) AS 'SUM(SalesAmount)'
 FROM FactSales
 GROUP BY ProductKey
-HAVING SUM(SalesAmount) > 5000000
-ORDER BY SUM(SalesAmount);
+HAVING SUM(SalesAmount) >= 5000000
+ORDER BY SUM(SalesAmount) DESC;
 
 -- 2 B)
 SELECT 
@@ -153,7 +152,7 @@ GROUP BY DepartmentName;
 -- 10
 SELECT
 	Title,
-	sum(VacationHours)
+	sum(VacationHours) AS 'sum(VacationHours)'
 FROM DimEmployee
 WHERE Gender = 'F'
 AND DepartmentName IN ('Production', 'Marketing', 'Engineering', 'Finance')
