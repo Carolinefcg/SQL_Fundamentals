@@ -56,25 +56,27 @@ ORDER BY SUM(SalesAmount) DESC;
 -- 3 A)
 SELECT
 	TOP(1) CustomerKey,
-	SUM(SalesAmount) AS 'SUM(SalesAmount)'
-FROM FactOnlineSales
+	SUM(SalesQuantity) AS 'SUM(SalesQuantity)'
+FROM 
+	FactOnlineSales
 GROUP BY CustomerKey
-ORDER BY SUM(SalesAmount) DESC;
+ORDER BY SUM(SalesQuantity) DESC;
 
 
 -- 3 B)
 SELECT
 	TOP(3) ProductKey,
 	CustomerKey,
-	SUM(SalesAmount) AS 'SUM(SalesAmount)'
-FROM FactOnlineSales
+	SUM(SalesQuantity) AS 'SUM(SalesQuantity)'
+FROM 
+	FactOnlineSales
 WHERE CustomerKey IN (SELECT
 						TOP(1) CustomerKey
 					FROM FactOnlineSales
 					GROUP BY CustomerKey
-					ORDER BY SUM(SalesAmount) DESC)
+					ORDER BY SUM(SalesQuantity) DESC)
 GROUP BY CustomerKey, ProductKey
-ORDER BY SUM(SalesAmount) DESC;
+ORDER BY SUM(SalesQuantity) DESC;
 
 
 -- 4 A)
