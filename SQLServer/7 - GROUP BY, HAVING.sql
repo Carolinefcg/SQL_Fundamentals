@@ -124,24 +124,28 @@ SELECT
 	Gender,
 	COUNT(Gender) AS 'Customer_qty',
 	AVG(YearlyIncome) AS 'AVG(YearlyIncome)'
-FROM DimCustomer
+FROM 
+	DimCustomer
 WHERE GENDER IS NOT NULL
 GROUP BY Gender;
 
 -- 8
 SELECT
 	Education,
-	COUNT(1) AS 'Customer_qty',
+	COUNT(Education) AS 'Customer_qty',
 	AVG(YearlyIncome) AS 'AVG(YearlyIncome)'
-FROM DimCustomer
+FROM 
+	DimCustomer
 WHERE Education IS NOT NULL
-GROUP BY Education;
+GROUP BY Education
+ORDER BY COUNT(Education) DESC;
 
 -- 9
 SELECT
 	DepartmentName,
-	COUNT(1) AS 'Employees_Qty'
-FROM DimEmployee
+	COUNT(DepartmentName) AS 'Employees_Qty'
+FROM 
+	DimEmployee
 WHERE EndDate IS NULL
 GROUP BY DepartmentName;
 
@@ -154,7 +158,3 @@ WHERE Gender = 'F'
 AND DepartmentName IN ('Production', 'Marketing', 'Engineering', 'Finance')
 AND HireDate BETWEEN '1999-01-01' AND '2000-12-31'
 GROUP BY Title;
-
-
-SELECT *
-FROM DimEmployee;
