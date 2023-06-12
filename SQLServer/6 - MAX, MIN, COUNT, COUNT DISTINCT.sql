@@ -9,7 +9,8 @@ SELECT
 	MAX(ReturnQuantity) AS 'MAX_Qtd_Devolvida',
 	MIN(SalesQuantity) AS 'MIN_Qtd_Vendida',
 	MIN(ReturnQuantity)AS 'MIN_Qtd_Devolvida'
-FROM FactSales;
+FROM FactSales
+WHERE channelKey = 1;
 
 -- 2
 SELECT 
@@ -20,19 +21,17 @@ WHERE Occupation = 'Professional';
 -- 3 A) E B)
 select 
 	TOP(1) StoreName,
-	MAX(EmployeeCount) as 'max'
+	EmployeeCount as 'max'
 from DimStore
-group by StoreName
-ORDER BY MAX(EmployeeCount) DESC;
+ORDER BY EmployeeCount DESC;
 
 -- 3 C) E D)
 SELECT
 	TOP(1) StoreName,
-	MIN(EmployeeCount) AS 'MIN'
+	EmployeeCount AS 'MIN'
 FROM DimStore
 WHERE EmployeeCount IS NOT NULL
-GROUP BY StoreName
-ORDER BY MIN(EmployeeCount) ASC;
+ORDER BY EmployeeCount ASC;
 
 -- 4 A)
 SELECT 
