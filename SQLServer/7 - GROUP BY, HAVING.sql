@@ -119,12 +119,6 @@ SELECT
 FROM DimProduct
 GROUP BY BrandName;
 
-SELECT
-	BrandName,
-	COUNT(DISTINCT ColorID) AS 'Colors'
-FROM DimProduct
-GROUP BY BrandName;
-
 -- 7
 SELECT
 	Gender,
