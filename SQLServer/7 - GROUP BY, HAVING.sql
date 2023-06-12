@@ -122,7 +122,7 @@ GROUP BY BrandName;
 -- 7
 SELECT
 	Gender,
-	COUNT(1) AS 'Customer_qty',
+	COUNT(Gender) AS 'Customer_qty',
 	AVG(YearlyIncome) AS 'AVG(YearlyIncome)'
 FROM DimCustomer
 WHERE GENDER IS NOT NULL
