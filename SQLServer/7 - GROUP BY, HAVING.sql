@@ -50,7 +50,7 @@ SELECT
 	SUM(SalesAmount) AS 'SUM(SalesAmount)'
 FROM FactSales
 GROUP BY ProductKey
-ORDER BY SUM(SalesAmount);
+ORDER BY SUM(SalesAmount) DESC;
 
 
 -- 3 A)
