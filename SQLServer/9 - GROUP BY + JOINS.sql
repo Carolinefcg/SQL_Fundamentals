@@ -60,42 +60,44 @@ FROM
 	FactSales AS F
 INNER JOIN DimStore AS S
 	ON F.StoreKey = S.StoreKey
-GROUP BY S.StoreName;
+GROUP BY S.StoreName
+ORDER BY S.StoreName;
 
 -- 1 B)
 SELECT TOP (1000)
-	D.CalendarMonthLabel,
 	D.CalendarYear,
-	SUM(F.SalesQuantity) AS 'SUM(F.SalesQuantity)'
+	D.CalendarMonthLabel,
+	SUM(F.SalesAmount) AS 'SUM(F.SalesQuantity)'
 FROM
 	FactSales AS F
 INNER JOIN DimDate AS D
 	ON F.DateKey = D.Datekey
-GROUP BY D.CalendarMonthLabel, D.CalendarYear
-ORDER BY D.CalendarMonthLabel ASC,D.CalendarYear DESC;
+-- GROUP BY EVEN WITHOUT SELECTING THE COLUMN D.CalendarMonth 
+GROUP BY D.CalendarYear, D.CalendarMonthLabel, D.CalendarMonth 
+ORDER BY D.CalendarMonth ASC;
 
 -- 2 A)
 SELECT TOP(1)
 	P.ColorName,
-	 SUM(F.SalesAmount) AS 'SUM(F.SalesAmount)'
+	 SUM(F.SalesQuantity) AS 'SUM(F.SalesAmount)'
 FROM
 	FactSales AS F
 INNER JOIN DimProduct AS P
-ON F.ProductKey = P.ProductKey
+	ON F.ProductKey = P.ProductKey
 GROUP BY P.ColorName
-ORDER BY SUM(F.SalesAmount) DESC;
+ORDER BY SUM(F.SalesQuantity) DESC;
 
 -- 2 B)
 SELECT 
 	P.ColorName,
-	 SUM(F.SalesAmount) AS 'SUM(F.SalesAmount)'
+	 SUM(F.SalesQuantity) AS 'SUM(F.SalesQuantity)'
 FROM
 	FactSales AS F
 INNER JOIN DimProduct AS P
-ON F.ProductKey = P.ProductKey
+	ON F.ProductKey = P.ProductKey
 GROUP BY P.ColorName
-HAVING SUM(F.SalesAmount) >3000000
-ORDER BY SUM(F.SalesAmount) DESC;
+HAVING SUM(F.SalesQuantity) >= 3000000
+ORDER BY SUM(F.SalesQuantity) DESC;
 
 -- 3
 SELECT
