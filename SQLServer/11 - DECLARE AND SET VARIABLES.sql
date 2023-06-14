@@ -77,3 +77,9 @@ SELECT
 FROM	
 	DimProduct
 WHERE @prdkey = ProductKey;
+
+
+-- GLOBAL VARIBLES
+
+SELECT * FROM DimEmployee
+SELECT @@ROWCOUNT AS 'ROWCOUNT' -- GLOBAL VARIABLE
