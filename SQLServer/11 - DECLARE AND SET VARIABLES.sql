@@ -53,3 +53,27 @@ SET @STORES_OFF = (
 					WHERE Status = 'Off'
 					)
 SELECT @STORES_OFF AS 'STORES_OFF'
+
+
+-- SET WITHOUT SET STATEMENT
+
+DECLARE @prdkey INT, @prdName VARCHAR(100)
+
+SELECT TOP(1)
+	@prdkey = ProductKey,
+	@prdName = ProductName
+FROM	
+	DimProduct
+ORDER BY UnitPrice DESC;
+
+-- Applying that
+
+SELECT
+	ProductKey,
+	ProductName,
+	UnitPrice,
+	ProductLabel,
+	ProductDescription
+FROM	
+	DimProduct
+WHERE @prdkey = ProductKey;
