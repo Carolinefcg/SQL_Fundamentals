@@ -70,7 +70,7 @@ SELECT
 	F.Amount
 FROM 
 	FactStrategyPlan AS F
-LEFT JOIN 
+INNER JOIN 
 	DimAccount AS A
 ON F.AccountKey = A.AccountKey;
 
@@ -82,7 +82,7 @@ SELECT
 	F.Amount
 FROM 
 	FactStrategyPlan AS F
-LEFT JOIN 
+INNER JOIN 
 	DimScenario AS S
 ON F.ScenarioKey = S.ScenarioKey;
 
@@ -92,7 +92,7 @@ SELECT
 	S.ProductSubcategoryKey
 FROM 
 	DimProduct AS P
-FULL JOIN 
+RIGHT JOIN 
 	DimProductSubcategory AS S
 ON S.ProductSubcategoryKey = P.ProductSubcategoryKey
 WHERE P.ProductName IS NULL;
@@ -115,7 +115,7 @@ select
 	F.SalesAmount
 from 
 	FactOnlineSales AS F
-LEFT JOIN 
+INNER JOIN 
 	DimPromotion AS P
 ON F.PromotionKey = P.PromotionKey
 WHERE P.PromotionName <> 'No discount'
@@ -130,16 +130,16 @@ SELECT
 	F.SalesAmount
 FROM 
 	FactSales AS F
-LEFT JOIN 
+INNER JOIN 
 	DimChannel AS C
 ON F.channelKey = C.ChannelKey
-LEFT JOIN 
+INNER JOIN 
 	DimStore AS S
 ON F.StoreKey = S.StoreKey
 LEFT JOIN
 	DimProduct AS P
 ON F.ProductKey = P.ProductKey
-ORDER BY F.SalesAmount;
+ORDER BY F.SalesAmount DESC;
 
 select TOP(10)* from FactSales;
 select TOP(10)* from DimChannel;

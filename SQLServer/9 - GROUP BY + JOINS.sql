@@ -107,28 +107,30 @@ FROM
 	FactSales AS F
 INNER JOIN DimProduct AS D
 	ON F.ProductKey = D.ProductKey
-INNER JOIN DimProductSubcategory AS S
-	ON D.ProductSubcategoryKey = S.ProductSubcategoryKey
-INNER JOIN DimProductCategory AS P
-	ON S.ProductCategoryKey = P.ProductCategoryKey
+		INNER JOIN DimProductSubcategory AS S
+			ON D.ProductSubcategoryKey = S.ProductSubcategoryKey
+			INNER JOIN DimProductCategory AS P
+				ON S.ProductCategoryKey = P.ProductCategoryKey
 GROUP BY P.ProductCategoryName;
 
 -- 4 A)
 SELECT TOP(1)
-	CONCAT_WS(' ', C.FirstName, C.MiddleName, C.LastName) AS 'Full_Name',
+	C.CustomerKey,
+	CONCAT_WS(' ', C.FirstName, C.LastName) AS 'Full_Name',
 	SUM(F.SalesQuantity) AS 'SUM(F.SalesQuantity)'
 FROM 
 	FactOnlineSales AS F
 INNER JOIN DimCustomer AS C
 	ON F.CustomerKey = C.CustomerKey
-WHERE CONCAT_WS(' ', C.FirstName, C.MiddleName, C.LastName) IS NOT NULL
-AND CONCAT_WS(' ', C.FirstName, C.MiddleName, C.LastName) <> ''
-GROUP BY CONCAT_WS(' ', C.FirstName, C.MiddleName, C.LastName)
+WHERE CONCAT_WS(' ', C.FirstName, C.LastName) IS NOT NULL
+	AND CONCAT_WS(' ', C.FirstName, C.LastName) <> ''
+	AND C.CustomerType = 'Person'
+GROUP BY C.CustomerKey, CONCAT_WS(' ', C.FirstName, C.LastName)
 ORDER BY SUM(F.SalesQuantity) DESC;
 
 -- 4 B)
 SELECT TOP (10)
-	CONCAT_WS(' ', C.FirstName, C.MiddleName, C.LastName) AS 'Full_Name',
+	CONCAT_WS(' ', C.FirstName, C.LastName) AS 'Full_Name',
 	P.ProductName,
 	SUM(F.SalesQuantity) AS 'SUM(F.SalesQuantity)'
 FROM 
@@ -137,20 +139,19 @@ INNER JOIN DimCustomer AS C
 	ON F.CustomerKey = C.CustomerKey
 INNER JOIN DimProduct AS P
 	ON F.ProductKey = P.ProductKey
-WHERE CONCAT_WS(' ', C.FirstName, C.MiddleName, C.LastName) = (
+WHERE CONCAT_WS(' ', C.FirstName, C.LastName) = (
 		SELECT TOP(1)
-		CONCAT_WS(' ', C.FirstName, C.MiddleName, C.LastName) AS 'Full_Name'
-		--,SUM(F.SalesQuantity) AS 'SUM(F.SalesQuantity)'
+		CONCAT_WS(' ', C.FirstName, C.LastName) AS 'Full_Name'
 		FROM 
 			FactOnlineSales AS F
 		INNER JOIN DimCustomer AS C
 			ON F.CustomerKey = C.CustomerKey
-		WHERE CONCAT_WS(' ', C.FirstName, C.MiddleName, C.LastName) IS NOT NULL
-		AND CONCAT_WS(' ', C.FirstName, C.MiddleName, C.LastName) <> ''
-		GROUP BY CONCAT_WS(' ', C.FirstName, C.MiddleName, C.LastName)
+		WHERE CONCAT_WS(' ', C.FirstName, C.LastName) IS NOT NULL
+		AND CONCAT_WS(' ', C.FirstName, C.LastName) <> ''
+		GROUP BY C.CustomerKey, CONCAT_WS(' ', C.FirstName, C.LastName)
 		ORDER BY SUM(F.SalesQuantity) DESC
 		)
-GROUP BY CONCAT_WS(' ', C.FirstName, C.MiddleName, C.LastName),
+GROUP BY C.CustomerKey,CONCAT_WS(' ', C.FirstName, C.LastName),
 		P.ProductName
 ORDER BY SUM(F.SalesQuantity) DESC;
 
@@ -168,13 +169,13 @@ GROUP BY C.Gender;
 -- 6
 SELECT
 	C.CurrencyDescription,
-	SUM(F.AverageRate) AS 'F.AverageRate'
+	AVG(F.AverageRate) AS 'F.AverageRate'
 FROM
 	FactExchangeRate AS F 
 INNER JOIN DimCurrency AS C
 	ON F.CurrencyKey = C.CurrencyKey
 GROUP BY C.CurrencyDescription
-HAVING SUM(F.AverageRate) BETWEEN 10 AND 100;
+HAVING AVG(F.AverageRate) BETWEEN 10 AND 100;
 
 -- 7
 SELECT
@@ -201,7 +202,7 @@ GROUP BY D.CalendarYear;
 -- 9
 SELECT 
 	S.ProductSubcategoryName,
-	COUNT(P.ProductKey) AS 'COUNT( P.ProductKey)'
+	COUNT(*) AS 'COUNT( P.ProductKey)'
 FROM
 	DimProduct AS P
 INNER JOIN DimProductSubcategory AS S
@@ -214,7 +215,7 @@ GROUP BY S.ProductSubcategoryName;
 SELECT 
 	P.BrandName,
 	S.ProductSubcategoryName,
-	COUNT(P.ProductKey) AS 'COUNT( P.ProductKey)'
+	COUNT(*) AS 'COUNT( P.ProductKey)'
 FROM
 	DimProduct AS P
 INNER JOIN DimProductSubcategory AS S
