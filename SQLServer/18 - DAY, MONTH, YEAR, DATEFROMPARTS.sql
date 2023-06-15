@@ -1,0 +1,21 @@
+
+
+-- SEPARATE INFO FROM DATE TYPE
+--- DAY, MONTH, YEAR
+
+DECLARE @date DATE = '07-12-2001'
+
+SELECT 
+	DAY(@date) AS 'DAY',
+	MONTH(@date) AS 'MONTH',
+	YEAR(@date) AS 'YEAR'
+
+
+-- UNION INFO FROM DATE TYPE
+--- DATEFROMPARTS
+
+DECLARE @day INT = '04', @month INT = '08', @year INT = '2014'
+
+SELECT
+	DATEFROMPARTS(@year,@month,@day)
+
