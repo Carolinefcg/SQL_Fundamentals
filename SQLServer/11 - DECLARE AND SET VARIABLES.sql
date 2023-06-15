@@ -87,17 +87,12 @@ SELECT @@ROWCOUNT AS 'ROWCOUNT' -- GLOBAL VARIABLE
 -- EXERCISES
 
 -- 1
-DECLARE @v1 INT, @v2 INT, @v3 INT, @v4 INT
-SET @v1 = 10
-SET @v2 = 5
-SET @v3 = 34
-SET @v4 = 7
+DECLARE @v1 FLOAT = 10, @v2 FLOAT= 5, @v3 FLOAT= 34, @v4 FLOAT= 7
 
-DECLARE @soma INT, @sub INT, @mult INT, @div DECIMAL(10,4)
-SET @soma = @v1 + @v2
-SET @sub =  @v3 - @v4
-SET @mult = @v1 * @v4
-SET @div = @v3/@v4
+DECLARE @soma INT = @v1 + @v2,
+		@sub INT =  @v3 - @v4, 
+		@mult INT = @v1 * @v4, 
+		@div FLOAT= @v3/@v4
 
 SELECT  @soma, @sub, @mult, ROUND(@div, 2);
 
@@ -111,27 +106,45 @@ SET @fat = @qtd*@preco
 SELECT @produto, @qtd, @preco,@fat
 
 -- 3
-DECLARE @nome VARCHAR(30), @dn DATE, @pets INT
-SET @nome = 'André'
-SET @dn = '1998-02-10'
-set @pets = 2
+DECLARE @nome VARCHAR(30) = 'André',
+		@dn DATE = '1998-02-10',
+		@pets INT = 2
 
 SELECT CONCAT('Meu nome é ', @nome, ', nasci em ', FORMAT(@dn, 'dd/MM/yyyy'), ' e tenho ', @pets, ' pets.')
 
 -- 4
-DECLARE @lojas2008 VARCHAR(100)
-SET @lojas2008 = ''
+DECLARE @lojas2008 VARCHAR(100) = ''
 SELECT
 	@lojas2008 = @lojas2008 + StoreName + ', '
-FROM DimStore
-WHERE Status = 'Off'
-AND FORMAT(CloseDate, 'yyyy') = '2008'
+FROM 
+	DimStore
+WHERE FORMAT(CloseDate, 'yyyy') = '2008'
 
 SET @lojas2008 = LEFT(@lojas2008, DATALENGTH(@lojas2008)-2)
 PRINT 'Closed stores in 2008: ' + @lojas2008;
 
 -- 5
-DECLARE 
-SELECT *
-FROM DimProductSubcategory
+DECLARE @lampsKey INT, @lamps VARCHAR(999) 
+SET @lamps = ''
+
+SELECT 
+	@lampsKey =  ProductSubcategoryKey
+FROM 
+	DimProductSubcategory
 WHERE ProductSubcategoryName = 'Lamps';
+
+SELECT
+	@lamps = @lamps + CAST(ProductKey AS VARCHAR(10)) + ','
+FROM
+	DimProduct
+WHERE ProductSubcategoryKey = @lampsKey;
+
+SET @lamps = LEFT(@lamps, DATALENGTH(@lamps)-3)
+PRINT 'LAMPS: ' + CHAR(10)+ @lamps
+
+
+SELECT
+	DISTINCT ProductKey
+FROM
+	DimProduct
+WHERE ProductSubcategoryKey = @lampsKey;
