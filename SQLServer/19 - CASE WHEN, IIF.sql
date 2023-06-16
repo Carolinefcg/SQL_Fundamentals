@@ -14,8 +14,10 @@ SELECT
 				 CAST(SUBSTRING(@R, CHARINDEX(',', @R)+1, 100) AS FLOAT),
 				0.09)) AS 'DISCOUNT',
 	CASE
-		WHEN ClassName = SUBSTRING(@E, 1, CHARINDEX(',', @E)-1) THEN UnitPrice*(1- CAST(SUBSTRING(@E, CHARINDEX(',', @E)+1, 100) AS FLOAT))
-		WHEN ClassName = SUBSTRING(@R, 1, CHARINDEX(',', @R)-1) THEN UnitPrice*(1- CAST(SUBSTRING(@R, CHARINDEX(',', @R)+1, 100) AS FLOAT))
+		WHEN ClassName = SUBSTRING(@E, 1, CHARINDEX(',', @E)-1) 
+			THEN UnitPrice*(1- CAST(SUBSTRING(@E, CHARINDEX(',', @E)+1, 100) AS FLOAT))
+		WHEN ClassName = SUBSTRING(@R, 1, CHARINDEX(',', @R)-1) 
+			THEN UnitPrice*(1- CAST(SUBSTRING(@R, CHARINDEX(',', @R)+1, 100) AS FLOAT))
 		ELSE UnitPrice*0.91
 	END AS 'UNITPRICE_DISCOUNTED'
 FROM
@@ -37,7 +39,7 @@ ORDER BY COUNT(ProductKey) DESC;
 
 -- 3
 SELECT
-	StoreName,
+	StoreName,	
 	EmployeeCount,
 	CASE
 		WHEN EmployeeCount >= 50 THEN 'Acima de 50 funcionários'
@@ -52,5 +54,40 @@ FROM
 
 -- 4
 SELECT
+	S.ProductSubcategoryName,
+	AVG(P.Weight)*100 AS 'WEIGHT',
+	CASE
+		WHEN AVG(P.Weight)*100 < 1000 THEN 1
+		ELSE 2
+	END AS 'ROUTE'
 FROM
-	DIMPRO
+	DimProduct AS P
+INNER JOIN DimProductSubcategory AS S
+	ON P.ProductSubcategoryKey = S.ProductSubcategoryKey
+GROUP BY S.ProductSubcategoryName; 
+
+-- 5
+SELECT
+	FirstName,
+	Gender,
+	TotalChildren,
+	EmailAddress,
+	CASE 
+		WHEN GENDER = 'F' AND TotalChildren >= 1 THEN 'MOTHERS'
+		WHEN GENDER = 'M' AND TotalChildren >= 1 THEN 'FATHERS'
+		ELSE 'PRIZES'
+	END AS 'CAMPAIGN'
+FROM	
+	DimCustomer;
+
+-- 6
+SELECT --TOP(1)
+	 DATEDIFF(DAY, OpenDate, GETDATE()) AS 'DAYSOPEN',
+	*
+FROM DimStore
+WHERE CloseDate IS NULL
+ORDER BY DATEDIFF(DAY, OpenDate, GETDATE()) DESC;
+
+
+
+
