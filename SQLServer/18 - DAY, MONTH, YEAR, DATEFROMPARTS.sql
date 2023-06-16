@@ -98,3 +98,34 @@ SELECT
 	CONCAT(UPPER(FirstName), DATENAME(DAYOFYEAR, BirthDate)) as 'PASSWORD'
 FROM
 	DimEmployee
+
+-- 4
+SELECT
+	FirstName,
+	EmailAddress,
+	AddressLine1,
+	DateFirstPurchase
+FROM	
+	DimCustomer
+WHERE DATEPART(YEAR, DateFirstPurchase) = 2001;
+
+-- 5
+SELECT
+	FirstName,
+	EmailAddress,
+	HireDate,
+	DAY(HireDate) AS 'DAY(HireDate)' ,
+	FORMAT(HireDate, 'MMMMM') AS 'MONTH(HireDate)',
+	YEAR(HireDate) AS 'YEAR(HireDate)' 
+FROM
+	DimEmployee;
+
+-- 6
+DECLARE @TODAYSDATE DATE = GETDATE()
+
+SELECT TOP(1)
+	DATEDIFF(DAYOFYEAR, OpenDate, @TODAYSDATE),
+	*
+FROM
+	DimStore
+ORDER BY DATEDIFF(DAYOFYEAR, OpenDate, @TODAYSDATE)
