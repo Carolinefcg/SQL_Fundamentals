@@ -337,7 +337,42 @@ FROM DimProduct
 
 
 -- 9
+GO
+WITH q8a AS(
+		SELECT
+		COUNT(*) AS 'QTD'
+		FROM DimProduct 
+		GROUP BY BrandName)
+SELECT MAX(QTD) FROM q8a
 
+-- 10
+GO
+WITH CTE_ProdutosAdventureWorks AS(
+	SELECT
+		ProductKey,
+		ProductName,
+		ProductSubcategoryKey,
+		BrandName,
+		UnitPrice
+	FROM DimProduct
+	WHERE BrandName = 'Adventure Works'
+),
+CTE_CategoriaTelevisionsERadio AS (
+	SELECT
+		ProductSubcategoryKey,
+		ProductSubcategoryName
+	FROM
+		DimProductSubcategory
+	WHERE ProductSubcategoryName IN ('Televisions', 'Monitors')
+)
+SELECT
+	A.*,
+	C.*
+FROM  
+	CTE_ProdutosAdventureWorks AS A
+INNER JOIN CTE_CategoriaTelevisionsERadio AS C
+	ON A.ProductSubcategoryKey = C.ProductSubcategoryKey
+	
 
 
 
