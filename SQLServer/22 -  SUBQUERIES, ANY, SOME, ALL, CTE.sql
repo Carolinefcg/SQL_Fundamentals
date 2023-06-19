@@ -278,18 +278,80 @@ FROM
 	DimProduct
 
 -- 8
-SELECT
-	(SELECT TOP(1)
-	COUNT(*) 
-	FROM DimProduct 
-	GROUP BY BrandName 
-	ORDER BY COUNT(*) DESC) AS 'Maior quantidade de produtos por marca',
-	(SELECT TOP(1)
-	COUNT(*) 
-	FROM DimProduct 
-	GROUP BY BrandName 
-	ORDER BY COUNT(*) ASC) AS 'Menor quantidade de produtos por marca',
-FROM
-	DimProduct
+GO
+WITH q8a AS(
+		SELECT TOP(1)
+		COUNT(*) AS 'Maior quantidade de produtos por marca'
+		FROM DimProduct 
+		GROUP BY BrandName 
+		ORDER BY COUNT(*) DESC
+				),
+	q8b as (
+		SELECT TOP(1)
+		COUNT(*) AS 'Menor quantidade de produtos por marca'
+		FROM DimProduct 
+		GROUP BY BrandName 
+		ORDER BY COUNT(*) ASC
+				),
+	q8c_aux as (
+		SELECT AVG(ProductKey) AS 'avg'
+		FROM DimProduct 
+		GROUP BY BrandName
+				),
+	q8c as(
+		SELECT AVG(avg) AS 'Média de produtos por marca' 
+		FROM q8c_aux
+				)
+SELECT * FROM q8a
+SELECT * FROM q8b
+
+
+SELECT TOP (1)
+	(
+		SELECT TOP(1)
+		COUNT(*) 
+		FROM DimProduct 
+		GROUP BY BrandName 
+		ORDER BY COUNT(*) DESC
+				)AS 'Maior quantidade de produtos por marca',
+			(
+		SELECT TOP(1)
+		COUNT(*)
+		FROM DimProduct 
+		GROUP BY BrandName 
+		ORDER BY COUNT(*) ASC
+				) AS 'Menor quantidade de produtos por marca',
+		(
+		SELECT AVG(avg_pk)  
+		FROM (SELECT AVG(ProductKey) AS 'avg_pk' FROM DimProduct GROUP BY BrandName) as t
+		)AS 'Média de produtos por marca'
+FROM DimProduct
+
+
+/*	
+	ATENTION!!!!!
+	if you're using a subquery in FROM,
+	>>>> ALWAYS <<<<< use an alias for your table
+	FROM (subquery) AS 'alias'
+*/
+
+
+-- 9
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
