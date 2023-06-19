@@ -153,7 +153,7 @@ SELECT
 	OpenDate
 FROM
 	DimStore
-WHERE CloseDate IS NOT NULL
+WHERE CloseDate IS NULL
 GO
 -- 6 A )
 CREATE VIEW vw_6a AS

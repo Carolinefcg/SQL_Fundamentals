@@ -80,7 +80,7 @@ SELECT
 	DATALENGTH(ProductName) AS 'DATALENGTH(ProductName)',
 	DATALENGTH(TRIM(STUFF(ProductName, CHARINDEX(ColorName, ProductName)-5 , 100, ''))) AS 'shorted_LENGTH'
 FROM
-	DimProduct
+	DimProduct  
 ORDER BY DATALENGTH(ProductName) DESC;
 
 -- 2
@@ -128,4 +128,5 @@ SELECT TOP(1)
 	*
 FROM
 	DimStore
-ORDER BY DATEDIFF(DAYOFYEAR, OpenDate, @TODAYSDATE)
+WHERE CloseDate IS NULL
+ORDER BY DATEDIFF(DAYOFYEAR, OpenDate, @TODAYSDATE) DESC
