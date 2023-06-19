@@ -111,3 +111,104 @@ DROP COLUMN	cargo, bonus
 
 SELECT * FROM Funcionarios
 
+--- EXERCISES
+
+-- 1 A)
+CREATE DATABASE BD_Teste
+-- 1 B)
+DROP DATABASE BD_Teste
+-- 1 C)
+CREATE DATABASE Exercicios
+
+-- 2
+USE Exercicios
+
+CREATE TABLE dCliente(
+	ID_Cliente INT, 
+	Nome_Cliente VARCHAR(100),
+	Data_de_Nascimento DATE)
+
+SELECT * FROM dCliente;
+
+CREATE TABLE dGerente(
+	ID_Gerente INT, 
+	Nome_Gerente VARCHAR(100),
+	Data_de_Contratacao DATE,
+	Salario FLOAT)
+
+SELECT * FROM dGerente;
+
+
+
+CREATE TABLE fContratos(
+	ID_Contrato INT, 
+	Data_de_Assinatura DATE,
+	ID_Cliente INT, 
+	ID_Gerente INT, 
+	Valor_do_Contrato FLOAT)
+
+SELECT * FROM fContratos;
+
+-- 3
+INSERT INTO dCliente(ID_Cliente, Nome_Cliente, Data_de_Nascimento)
+	VALUES
+	(1, 'André Martins',	'19890212'),
+	(2, 'Bárbara Campos',	'19920507'),
+	(3, 'Carol Freitas',	'19850423'),
+	(4, 'Diego Cardoso',	'19941011'),
+	(5, 'Eduardo Pereira',	'19881109'),
+	(6, 'Fabiana Silva',	'19890902'),
+	(7, 'Gustavo Barbosa',	'19930627'),
+	(8, 'Helen Viana',		'19900211')
+
+SELECT * FROM dCliente
+
+INSERT INTO dGerente(ID_Gerente, Nome_Gerente, Data_de_Contratacao, Salario)
+	VALUES
+	(1, 'Lucas Sampaio',	'20150321',	6700),
+	(2, 'Mariana Padilha',	'20110110',	9900),
+	(3, 'Nathália Santos',	'20181003',	7200),
+	(4, 'Otávio Costa',	'20170418',	11000)
+
+SELECT * FROM dGerente
+
+INSERT INTO fContratos(ID_Contrato, Data_de_Assinatura, ID_Cliente, ID_Gerente, Valor_do_Contrato)
+	VALUES
+	(1, '20190112',	8,	1,	23000),
+	(2, '20190210',	3,	2,	15500),
+	(3, '20190307',	7,	2,	6500),
+	(4, '20190315',	1,	3,	33000),
+	(5, '20190321',	5,	4,	11100),
+	(6, '20190323',	4,	2,	5500),
+	(7, '20190328',	9,	3,	55000),
+	(8, '20190404',	2,	1,	31000),
+	(9, '20190405',	10,	4,	3400),
+	(10,'20190405',	6,	2,	9200)
+
+SELECT * FROM fContratos
+
+-- 4
+INSERT INTO dCliente(ID_Cliente, Nome_Cliente, Data_de_Nascimento)
+	VALUES
+	(9, 'André Tins',	'19890213')
+
+INSERT INTO dGerente(ID_Gerente, Nome_Gerente, Data_de_Contratacao, Salario)
+	VALUES
+	(5, 'Lucas Cruz',	'20150321',	6705)
+
+INSERT INTO fContratos(ID_Contrato, Data_de_Assinatura, ID_Cliente, ID_Gerente, Valor_do_Contrato)
+	VALUES
+	(11, '20190113',	7,	5,	26000)
+
+-- 5
+UPDATE fContratos
+SET Data_de_Assinatura = '20190317',
+	ID_Gerente = 2,
+	Valor_do_Contrato = 33500
+WHERE ID_Contrato = 4
+
+select * from fContratos
+
+
+
+
