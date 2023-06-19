@@ -221,8 +221,8 @@ WHERE UnitPrice > ANY (SELECT UnitPrice
 SELECT *
 FROM 
 	DimEmployee
-WHERE ParentEmployeeKey = (SELECT 
-							ParentEmployeeKey
+WHERE DepartmentName = (SELECT 
+							DepartmentName
 						FROM
 							DimEmployee
 						WHERE FirstName = 'Miguel' and LastName = 'Severino')
@@ -246,26 +246,27 @@ FROM
 	DimCustomer
 WHERE CustomerKey IN (
 						SELECT
-						CustomerKey
-					FROM
-						FactOnlineSales
-					WHERE PromotionKey IN (SELECT
-											PromotionKey
-										FROM DimPromotion
-										WHERE PromotionName = 'Asian Holiday Promotion'
-										))
+							CustomerKey
+						FROM
+							FactOnlineSales
+						WHERE PromotionKey IN (
+											SELECT
+												PromotionKey
+											FROM DimPromotion
+											WHERE PromotionName = 'Asian Holiday Promotion'
+											))
 
 -- 6
-SELECT
+SELECT TOP(100)
 	CustomerKey,
 	CompanyName
 FROM 
 	DimCustomer
-WHERE NOT CustomerType = 'Person'
-AND CustomerKey IN (
+WHERE CustomerKey IN (
 					SELECT	CustomerKey
 					FROM FactOnlineSales
-					WHERE SalesAmount > 3000)
+					GROUP BY CustomerKey, ProductKey
+					HAVING COUNT(*) > 3000)
 
 -- 7
 SELECT
@@ -278,55 +279,16 @@ FROM
 	DimProduct
 
 -- 8
-GO
-WITH q8a AS(
-		SELECT TOP(1)
-		COUNT(*) AS 'Maior quantidade de produtos por marca'
-		FROM DimProduct 
-		GROUP BY BrandName 
-		ORDER BY COUNT(*) DESC
-				),
-	q8b as (
-		SELECT TOP(1)
-		COUNT(*) AS 'Menor quantidade de produtos por marca'
-		FROM DimProduct 
-		GROUP BY BrandName 
-		ORDER BY COUNT(*) ASC
-				),
-	q8c_aux as (
-		SELECT AVG(ProductKey) AS 'avg'
-		FROM DimProduct 
-		GROUP BY BrandName
-				),
-	q8c as(
-		SELECT AVG(avg) AS 'Média de produtos por marca' 
-		FROM q8c_aux
-				)
-SELECT * FROM q8a
-SELECT * FROM q8b
 
-
-SELECT TOP (1)
-	(
-		SELECT TOP(1)
-		COUNT(*) 
-		FROM DimProduct 
-		GROUP BY BrandName 
-		ORDER BY COUNT(*) DESC
-				)AS 'Maior quantidade de produtos por marca',
-			(
-		SELECT TOP(1)
-		COUNT(*)
-		FROM DimProduct 
-		GROUP BY BrandName 
-		ORDER BY COUNT(*) ASC
-				) AS 'Menor quantidade de produtos por marca',
-		(
-		SELECT AVG(avg_pk)  
-		FROM (SELECT AVG(ProductKey) AS 'avg_pk' FROM DimProduct GROUP BY BrandName) as t
-		)AS 'Média de produtos por marca'
-FROM DimProduct
-
+SELECT
+	MAX(QTD),
+	MIN(QTD),
+	AVG(QTD)
+FROM (SELECT 
+		BrandName,
+		COUNT(*) AS 'QTD'
+	 FROM DimProduct
+	 GROUP BY BrandName) AS T
 
 /*	
 	ATENTION!!!!!
@@ -338,12 +300,12 @@ FROM DimProduct
 
 -- 9
 GO
-WITH q8a AS(
+WITH q9 AS(
 		SELECT
 		COUNT(*) AS 'QTD'
 		FROM DimProduct 
 		GROUP BY BrandName)
-SELECT MAX(QTD) FROM q8a
+SELECT AVG(QTD) FROM q9
 
 -- 10
 GO
@@ -370,7 +332,7 @@ SELECT
 	C.*
 FROM  
 	CTE_ProdutosAdventureWorks AS A
-INNER JOIN CTE_CategoriaTelevisionsERadio AS C
+LEFT JOIN CTE_CategoriaTelevisionsERadio AS C
 	ON A.ProductSubcategoryKey = C.ProductSubcategoryKey
 	
 
