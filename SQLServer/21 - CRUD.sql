@@ -209,6 +209,11 @@ WHERE ID_Contrato = 4
 
 select * from fContratos
 
+-- 6 
+DELETE
+FROM fContratos
+WHERE ID_Contrato = 11
 
+SELECT * FROM fContratos
 
 
