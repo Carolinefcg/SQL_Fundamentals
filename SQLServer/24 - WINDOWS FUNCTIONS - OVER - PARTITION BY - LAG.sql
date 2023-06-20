@@ -290,25 +290,97 @@ FROM vwProdutos
 
 -- 3
 SELECT
-	*,
+	--*,
 	SUM(Quantidade_Vendida) OVER() AS 'QTD_TOTAL',
 	SUM(Quantidade_Vendida) OVER(PARTITION BY Marca) AS 'QTD_MARCA',
-	FORMAT((SUM(Quantidade_Vendida) OVER(PARTITION BY Marca))/SUM(Quantidade_Vendida) OVER(), '0.00%') AS '% PARTICIPACAO'
+	FORMAT(SUM(Quantidade_Vendida) OVER(PARTITION BY Marca)/SUM(Quantidade_Vendida) OVER(), '0.00%') AS '% PARTICIPACAO'
 FROM vwProdutos
+ORDER BY Marca
+
+-- 4 
+SELECT
+	Marca,
+	Cor,
+	Quantidade_Vendida,
+	RANK() OVER(PARTITION BY Marca ORDER BY Quantidade_Vendida DESC ) as 'Rank'
+FROM 
+	vwProdutos
+WHERE MARCA = 'Contoso'
+ORDER BY  Quantidade_Vendida DESC
+
+-- 5.1
+DROP IF EXISTS vwHistoricoLojas
+
+CREATE VIEW vwHistoricoLojas AS (
+	ID INT,
+	ANO INT, 
+	MES VARCHAR(20),
+	QTD_LOJAS INT
+)
+
+GO
+CREATE VIEW vwHistoricoLojas AS
+SELECT
+	RANK() OVER(ORDER BY YEAR(S.OpenDate),  MONTH(S.OpenDate) ) as 'ID',
+	YEAR(OpenDate) as 'ANO',
+	DATENAME(MONTH, OpenDate) AS 'MES',
+	COUNT(OpenDate) OVER()
+FROM 
+	DimStore AS S
+INNER JOIN DimDate AS D
+	ON D.CalendarYear = YEAR(S.OpenDate)
+	AND MONTH(D.Datekey) = MONTH(S.OpenDate)
+--WHERE YEAR(OpenDate) >= 2004
+GO
+/*
+	ID INT,
+	ANO INT, 
+	MES VARCHAR(20),
+	QTD_LOJAS INT
+)
+
+	CONCAT(YEAR(S.OpenDate),FORMAT(S.OpenDate, 'MM')) AS 'STORE',
+	D.CalendarMonth AS 'DATE',
+	S.*
+PARTITION BY YEAR(D.Datekey),  MONTH(D.Datekey)
+
+*/
+
+SELECT
+	RANK() OVER(ORDER BY YEAR(D.Datekey),  MONTH(D.Datekey), OpenDate ) as 'ID',
+	YEAR(D.Datekey) as 'ANO',
+	DATENAME(MONTH, D.Datekey) AS 'MES'/*,
+	COUNT(OpenDate) OVER(PARTITION BY D.CalendarMonth)*/
+FROM 
+	DimStore AS S
+RIGHT JOIN (SELECT DISTINCT 
+			CalendarMonth
+			-- ,FORMAT(Datekey, 'YYYYMM') AS 'Datekey'
+			FROM DimDate) AS D
+	ON D.CalendarMonth = CONCAT(YEAR(S.OpenDate),FORMAT(S.OpenDate, 'MM'))
+
+SELECT DISTINCT 
+CalendarMonth 
+FROM DimDate
+ORDER BY CalendarMonth
+
+SELECT * FROM DimDate
+SELECT * FROM DimStore
 
 
 SELECT
-	*,
-	SUM(Quantidade_Vendida) OVER() AS 'QTD_TOTAL',
-	SUM(Quantidade_Vendida) OVER(PARTITION BY Marca) AS 'QTD_MARCA',
-	FORMAT((SUM(Quantidade_Vendida) OVER(PARTITION BY Marca))/ (SELECT SUM(Quantidade_Vendida)  FROM vwProdutos), '0.00%')AS '% PARTICIPACAO'
-FROM vwProdutos
-
-SELECT * FROM vwProdutos
-
-
-
-
+	SUBSTRING(D.CalendarMonth, 1, 4),
+	D.*,
+	S.*
+	
+FROM 
+	DimStore AS S
+RIGHT JOIN (SELECT DISTINCT 
+			CalendarMonth,
+			Datekey
+			FROM DimDate) AS D
+	ON D.CalendarMonth = CONCAT(YEAR(S.OpenDate),FORMAT(S.OpenDate, 'MM'))
+WHERE CalendarMonth = 200501
 
 
 
