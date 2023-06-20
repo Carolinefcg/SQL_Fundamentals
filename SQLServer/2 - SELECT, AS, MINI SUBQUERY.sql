@@ -53,3 +53,13 @@ FROM DimProduct;
 
 SELECT ProductKey FROM DimProduct
 WHERE ProductKey NOT IN (SELECT ProductKey FROM FactSales);
+
+
+-- USING CURRENT ALIAS AS COLUMN
+
+SELECT 
+ProductKey AS 'Product_ID',
+COUNT(ProductKey) AS 'QTD' 
+FROM ContosoRetailDW.dbo.DimProduct
+GROUP BY ProductKey
+ORDER BY [QTD];
