@@ -309,48 +309,14 @@ WHERE MARCA = 'Contoso'
 ORDER BY  Quantidade_Vendida DESC
 
 -- 5.1
-DROP IF EXISTS vwHistoricoLojas
+DROP VIEW IF EXISTS vwHistoricoLojas
 
 CREATE VIEW vwHistoricoLojas AS (
-	ID INT,
-	ANO INT, 
-	MES VARCHAR(20),
-	QTD_LOJAS INT
-)
-
-GO
-CREATE VIEW vwHistoricoLojas AS
-SELECT
-	RANK() OVER(ORDER BY YEAR(S.OpenDate),  MONTH(S.OpenDate) ) as 'ID',
-	YEAR(OpenDate) as 'ANO',
-	DATENAME(MONTH, OpenDate) AS 'MES',
-	COUNT(OpenDate) OVER()
-FROM 
-	DimStore AS S
-INNER JOIN DimDate AS D
-	ON D.CalendarYear = YEAR(S.OpenDate)
-	AND MONTH(D.Datekey) = MONTH(S.OpenDate)
---WHERE YEAR(OpenDate) >= 2004
-GO
-/*
-	ID INT,
-	ANO INT, 
-	MES VARCHAR(20),
-	QTD_LOJAS INT
-)
-
-	CONCAT(YEAR(S.OpenDate),FORMAT(S.OpenDate, 'MM')) AS 'STORE',
-	D.CalendarMonth AS 'DATE',
-	S.*
-PARTITION BY YEAR(D.Datekey),  MONTH(D.Datekey)
-
-*/
-
 SELECT
 	RANK() OVER(ORDER BY Datekey) as 'ID',
 	YEAR(Datekey) as 'ANO',
 	DATENAME(MONTH, Datekey) AS 'MES',
-	ISNULL(S.QTD_OpenDate, 0)
+	ISNULL(S.QTD_OpenDate, 0) as 'QTD_LOJAS'
 FROM 
 	(SELECT CONCAT(YEAR(OpenDate),FORMAT(OpenDate, 'MM')) AS 'OpenDate',
 	COUNT(OpenDate) AS 'QTD_OpenDate'
@@ -361,10 +327,13 @@ RIGHT JOIN (SELECT DISTINCT
 			CalendarMonth,
 			Datekey
 			FROM DimDate
-			WHERE DAY(Datekey) = 01) AS D
+			WHERE DAY(Datekey) = 01
+			) AS D
 	ON D.CalendarMonth = S.OpenDate
 
+)
 
+SELECT * FROM vwHistoricoLojas
 
 
 
