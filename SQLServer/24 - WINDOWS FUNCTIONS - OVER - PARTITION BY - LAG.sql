@@ -347,40 +347,23 @@ PARTITION BY YEAR(D.Datekey),  MONTH(D.Datekey)
 */
 
 SELECT
-	RANK() OVER(ORDER BY YEAR(D.Datekey),  MONTH(D.Datekey), OpenDate ) as 'ID',
-	YEAR(D.Datekey) as 'ANO',
-	DATENAME(MONTH, D.Datekey) AS 'MES'/*,
-	COUNT(OpenDate) OVER(PARTITION BY D.CalendarMonth)*/
+	RANK() OVER(ORDER BY Datekey) as 'ID',
+	YEAR(Datekey) as 'ANO',
+	DATENAME(MONTH, Datekey) AS 'MES',
+	ISNULL(S.QTD_OpenDate, 0)
 FROM 
-	DimStore AS S
-RIGHT JOIN (SELECT DISTINCT 
-			CalendarMonth
-			-- ,FORMAT(Datekey, 'YYYYMM') AS 'Datekey'
-			FROM DimDate) AS D
-	ON D.CalendarMonth = CONCAT(YEAR(S.OpenDate),FORMAT(S.OpenDate, 'MM'))
-
-SELECT DISTINCT 
-CalendarMonth 
-FROM DimDate
-ORDER BY CalendarMonth
-
-SELECT * FROM DimDate
-SELECT * FROM DimStore
-
-
-SELECT
-	SUBSTRING(D.CalendarMonth, 1, 4),
-	D.*,
-	S.*
-	
-FROM 
-	DimStore AS S
+	(SELECT CONCAT(YEAR(OpenDate),FORMAT(OpenDate, 'MM')) AS 'OpenDate',
+	COUNT(OpenDate) AS 'QTD_OpenDate'
+	FROM DimStore
+	GROUP BY CONCAT(YEAR(OpenDate),FORMAT(OpenDate, 'MM'))
+	) AS S
 RIGHT JOIN (SELECT DISTINCT 
 			CalendarMonth,
 			Datekey
-			FROM DimDate) AS D
-	ON D.CalendarMonth = CONCAT(YEAR(S.OpenDate),FORMAT(S.OpenDate, 'MM'))
-WHERE CalendarMonth = 200501
+			FROM DimDate
+			WHERE DAY(Datekey) = 01) AS D
+	ON D.CalendarMonth = S.OpenDate
+
 
 
 
