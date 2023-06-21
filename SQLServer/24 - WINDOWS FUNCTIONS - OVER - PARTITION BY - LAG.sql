@@ -333,9 +333,92 @@ RIGHT JOIN (SELECT DISTINCT
 
 )
 
-SELECT * FROM vwHistoricoLojas
+-- 5.2
+SELECT 
+	*,
+	SUM(QTD_LOJAS) OVER(ORDER BY ID ROWS BETWEEN 2 PRECEDING AND CURRENT ROW ) AS 'MOVING SUM'
+FROM
+	vwHistoricoLojas
+
+-- 6
+SELECT 
+	*,
+	SUM(QTD_LOJAS) OVER(ORDER BY ID ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW ) AS 'MOVING SUM'
+FROM
+	vwHistoricoLojas
+
+-- 7.1
+DROP DATABASE IF EXISTS DESAFIO
+
+CREATE DATABASE DESAFIO
+
+DROP TABLE IF EXISTS Calendario
+
+CREATE TABLE Calendario (
+	data DATE
+)
+
+DECLARE @firstYear INT = (SELECT TOP (1) YEAR(DateFirstPurchase) 
+						FROM DimCustomer
+						WHERE DateFirstPurchase IS NOT NULL
+						ORDER BY DateFirstPurchase),
+		@lastYear INT = (SELECT TOP (1) YEAR(DateFirstPurchase) 
+						FROM DimCustomer
+						WHERE DateFirstPurchase IS NOT NULL
+						ORDER BY DateFirstPurchase DESC)
+DECLARE @dateAux DATE = DATEFROMPARTS(@firstYear, '01', '01')
 
 
+WHILE @dateAux <> DATEFROMPARTS(@lastYear, '12', '31')
+BEGIN
+
+INSERT INTO Calendario(data)
+VALUES (@dateAux)
+SET @dateAux = DATEADD(DAY, 1, @dateAux)
+
+END
+
+ALTER TABLE Calendario
+ADD ANO INT,
+	MES INT,
+	DIA INT,
+	ANOMES INT,
+	NOMEMES VARCHAR(20)
+
+UPDATE Calendario
+SET ANO = YEAR(data),
+	MES = MONTH(data),
+	DIA = DAY(data),
+	ANOMES= FORMAT(data, 'yyyyMM'),
+	NOMEMES = DATENAME(MONTH, data)
+
+SELECT * FROM Calendario
+
+DROP VIEW IF EXISTS vwNovosClientes
+GO
+CREATE VIEW vwNovosClientes AS 
+SELECT
+	RANK() OVER(ORDER BY C.ANOMES) AS 'ID',
+	C.ANO, 
+	C.NOMEMES,
+	ISNULL(NOVOS_CLIENTES, 0) AS 'NOVOS_CLIENTES'
+FROM
+	(SELECT DISTINCT
+		ANOMES,
+		ANO, 
+		NOMEMES
+	FROM Calendario) AS C
+LEFT JOIN (SELECT 
+			FORMAT(DateFirstPurchase, 'yyyyMM') AS 'ANOMES',
+			COUNT(DateFirstPurchase) AS 'NOVOS_CLIENTES'
+			FROM DimCustomer
+			WHERE FORMAT(DateFirstPurchase, 'yyyyMM') IS NOT NULL
+			GROUP BY FORMAT(DateFirstPurchase, 'yyyyMM')
+			) AS D
+				ON C.ANOMES = D.ANOMES
+GO
+
+SELECT * FROM vwNovosClientes
 
 
 
