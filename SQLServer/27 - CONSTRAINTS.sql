@@ -111,3 +111,17 @@ INSERT INTO dCliente(Nome_Cliente, Genero, Data_de_Nascimento, CPF)
 INSERT INTO fContratos(Data_de_Assinatura, ID_Cliente, ID_Gerente, Valor_do_Contrato)
 	VALUES('20190112',	8,	999,	23000)
 -- The manager 999 is not listed in dGerente Table
+
+
+/*
+MANAGING CONSTRAINTS
+*/
+
+-- REMOVING CONSTRAINTS
+ALTER TABLE dCliente
+DROP CONSTRAINT dcliente_genero_ck 
+
+-- ADDING CONSTRAINTS
+ALTER TABLE dCliente
+ADD CONSTRAINT dcliente_genero_ck CHECK (Genero IN ('M', 'F', 'O', 'PND'))
+
