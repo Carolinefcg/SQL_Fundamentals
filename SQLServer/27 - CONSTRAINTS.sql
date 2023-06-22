@@ -125,3 +125,61 @@ DROP CONSTRAINT dcliente_genero_ck
 ALTER TABLE dCliente
 ADD CONSTRAINT dcliente_genero_ck CHECK (Genero IN ('M', 'F', 'O', 'PND'))
 
+-- KNOWLEGDE CHECK
+
+-- 1 A)
+DROP DATABASE IF EXISTS AlugaFacil
+
+CREATE DATABASE AlugaFacil
+
+USE AlugaFacil
+-- 1 B)
+
+DROP TABLE IF EXISTS Cliente
+DROP TABLE IF EXISTS Carro
+DROP TABLE IF EXISTS Locacoes
+
+CREATE TABLE Cliente (
+	id_cliente INT IDENTITY(1,1),
+	nome_cliente VARCHAR(100) NOT NULL,
+	cnh VARCHAR(100) NOT NULL,
+	cartao VARCHAR(100) NOT NULL
+
+	CONSTRAINT cliente_id_cliente_pk PRIMARY KEY(id_cliente),
+	CONSTRAINT cliente_cnh_un UNIQUE(cnh)
+)
+
+CREATE TABLE Carro (
+	id_carro INT IDENTITY(1,1),
+	placa VARCHAR(100) NOT NULL,
+	modelo VARCHAR(100) NOT NULL,
+	tipo VARCHAR(100) NOT NULL
+
+	CONSTRAINT carro_id_carro_pk PRIMARY KEY(id_carro),
+	CONSTRAINT carro_placa_un UNIQUE(placa)
+)
+
+CREATE TABLE Locacoes (
+	id_locacao INT IDENTITY(1,1),
+	data_locacao DATE NOT NULL,
+	data_devolucao DATE NOT NULL,
+	id_carro INT NOT NULL,
+	id_cliente INT NOT NULL
+
+	CONSTRAINT locacoes_id_locacao_pk PRIMARY KEY(id_locacao),
+	CONSTRAINT locacoes_id_carro_fk FOREIGN KEY(id_carro) REFERENCES Carro(id_carro),
+	CONSTRAINT locacoes_id_cliente_fk FOREIGN KEY(id_cliente) REFERENCES Cliente(id_cliente)
+)
+
+-- 2
+INSERT INTO Cliente(cnh)
+	VALUES('111.111')
+
+INSERT INTO Carro(tipo)
+	VALUES('sedan')
+
+INSERT INTO Locacoes(data_locacao, data_devolucao, id_carro,id_cliente)
+	VALUES('1999-10-10', '1999-10-11',1, 2)
+
+
+
