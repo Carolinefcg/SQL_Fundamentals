@@ -96,3 +96,18 @@ INSERT INTO fContratos(Data_de_Assinatura, ID_Cliente, ID_Gerente, Valor_do_Cont
 SELECT * FROM fContratos
 
 
+-- EXAMPLE: VIOLOTATING CONSTRAINTS
+
+-- 1: ADD NULL VALUE
+INSERT INTO dCliente(Genero, Data_de_Nascimento, CPF)
+	VALUES('F', '2016-04-01', '111.111.111-11')
+-- 2: ADD NON UNIQUE VALUE
+INSERT INTO dCliente(Nome_Cliente, Genero, Data_de_Nascimento, CPF)
+	VALUES('Mr. Not Unique','F', '2016-04-01', '839.283.190-00')
+-- 3: ADD NOT ALLOWED VALUE
+INSERT INTO dCliente(Nome_Cliente, Genero, Data_de_Nascimento, CPF)
+	VALUES('Mr. Not Allowed','Alien', '2016-04-01', '839.283.190-01')
+-- : ADD FK VALUE THAT IS NOT IN THE FOREIGN TABLE
+INSERT INTO fContratos(Data_de_Assinatura, ID_Cliente, ID_Gerente, Valor_do_Contrato)
+	VALUES('20190112',	8,	999,	23000)
+-- The manager 999 is not listed in dGerente Table
