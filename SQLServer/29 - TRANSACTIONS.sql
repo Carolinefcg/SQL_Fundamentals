@@ -47,5 +47,20 @@ SELECT * FROM clientes_aux
 
 
 -- EXAMPLE 3: UPDATE TRANSACTION AND ROLLBACK AND (attempt to) COMMIT TRANSACTION
+BEGIN TRANSACTION
+UPDATE clientes_aux
+SET CPF = '000.000.000-01'
+WHERE id_cliente = 2
+
+SELECT * FROM clientes_aux
+
+ROLLBACK TRANSACTION
+
+SELECT * FROM clientes_aux
+
+-- will return an error message
+COMMIT TRANSACTION
+
+SELECT * FROM clientes_aux
 
 
