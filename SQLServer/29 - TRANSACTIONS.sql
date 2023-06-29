@@ -83,3 +83,28 @@ ELSE
 	END
 
 SELECT * FROM clientes_aux
+
+
+/*TRY AND CATCH*/
+BEGIN TRY
+
+	BEGIN TRANSACTION T4
+		UPDATE clientes_aux
+		SET Data_de_Nascimento = '12 de julho de 1998' -- wont work bc Data_de_Nascimento is DATE type
+		where id_cliente = 5
+
+	COMMIT TRANSACTION T4
+	PRINT 'DATE UPDATED SUCCESSFULLY'
+
+END TRY
+BEGIN CATCH
+
+	ROLLBACK TRANSACTION T4
+	PRINT 'DATE INVALID. TRANSACTION FAILED.'
+
+END CATCH
+
+SELECT * FROM clientes_aux
+
+
+
