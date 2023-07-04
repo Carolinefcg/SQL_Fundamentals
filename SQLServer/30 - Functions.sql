@@ -62,19 +62,24 @@ from DimEmployee
 
 
 
--- 3
+-- 3 >> FUNCTION RETURNS TABLE
 GO
 CREATE OR ALTER FUNCTION fnQ3(@gender as VARCHAR(10))
 RETURNS TABLE
-BEGIN
-	With result as (SELECT *
+AS RETURN (SELECT *
 	FROM
 	DimCustomer
 	WHERE Gender = @gender)
-	return result
-END
 GO
+
+SELECT * FROM dbo.fnQ3('F')
 -- 4
-
-
-
+GO
+CREATE OR ALTER FUNCTION fnQ4(@brand VARCHAR(200))
+RETURNS TABLE
+AS RETURN(SELECT 
+		DISTINCT ColorName
+		FROM DimProduct
+		WHERE BrandName = @brand)
+GO
+SELECT * FROM dbo.fnQ4('Contoso')
