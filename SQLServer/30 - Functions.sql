@@ -11,10 +11,12 @@ BEGIN
 		SET @result = @fullName
 	ELSE
 		SET @result = LEFT(@fullName, @spacePosition -1)
+	
 	RETURN @result
 END
 GO
 
-SELECT 
-fn,*
+use Exercicios
+
+SELECT *, dbo.fnFirstName(Nome_Gerente)
 FROM dGerente
