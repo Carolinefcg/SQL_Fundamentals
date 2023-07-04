@@ -44,6 +44,24 @@ FROM
 
 -- 2
 USE ContosoRetailDW
+
+GO
+CREATE OR ALTER FUNCTION fnQ2(@income FLOAT, @status VARCHAR(100), @bonus FLOAT)
+RETURNS FLOAT
+BEGIN
+	DECLARE @result FLOAT
+	IF @status = 'Current'
+		SET @result = @income * (1.00 + @bonus)
+	ELSE
+		SET @result = @income
+	return @result
+END
+GO
+SELECT *, dbo.fnQ2(BaseRate, Status, 0.50)
+from DimEmployee
+
+
+
 -- 3
 GO
 CREATE OR ALTER FUNCTION fnQ3(@gender as VARCHAR(10))
